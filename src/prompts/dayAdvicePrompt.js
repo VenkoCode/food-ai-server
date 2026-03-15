@@ -32,6 +32,7 @@ Instructions:
 - If calories are already exceeded, suggest lighter food choices.
 - If fats are high, suggest lean protein or vegetables.
 - If it is evening and user still has large calorie deficit, mention that.
+- Keep recommendation under 25 words.
 
 Return ONLY JSON.
 
