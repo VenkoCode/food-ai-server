@@ -1,6 +1,11 @@
 export function parseJsonSafe(text) {
   try {
-    return JSON.parse(text)
+    const cleaned = text
+      .replace(/```json/gi, "")
+      .replace(/```/g, "")
+      .trim()
+
+    return JSON.parse(cleaned)
   } catch (error) {
     return null
   }
