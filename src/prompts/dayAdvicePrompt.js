@@ -33,6 +33,7 @@ Instructions:
 - If fats are high, suggest lean protein or vegetables.
 - If it is evening and user still has large calorie deficit, mention that.
 - Keep recommendation under 25 words.
+- Structure the recommendation as: "short situation summary; actionable advice".
 
 Return ONLY JSON.
 
