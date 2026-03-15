@@ -18,22 +18,68 @@ fastify.post("/food/analyze", async (request, reply) => {
     const body = request.body || {}
     const text = body.text
 
-    if (!text) {
+    if (!text || typeof text !== "string") {
       return reply.status(400).send({
-        error: "Text is required"
+        error: "Field 'text' is required"
       })
     }
 
+    const prompt = `
+You are a nutrition assistant.
+
+Analyze the following meal description and return ONLY valid JSON.
+Do not add markdown.
+Do not add explanations.
+Do not wrap in triple backticks.
+
+Required JSON format:
+{
+  "meal_name": "string",
+  "estimated_calories": number,
+  "protein_g": number,
+  "carbs_g": number,
+  "fats_g": number,
+  "short_advice": "string"
+}
+
+Meal description:
+${text}
+`
+
     const response = await openai.responses.create({
       model: "gpt-4.1-mini",
-      input: `Analyze this food and estimate calories and protein: ${text}`
+      input: prompt
     })
 
-    return {
-      result: response.output_text
+    const rawText = response.output_text?.trim()
+
+    if (!rawText) {
+      return reply.status(500).send({
+        error: "Empty response from AI"
+      })
     }
+
+    let parsed
+
+    try {
+      parsed = JSON.parse(rawText)
+    } catch (parseError) {
+      request.log.error({
+        parseError,
+        rawText
+      })
+
+      return reply.status(500).send({
+        error: "AI returned invalid JSON",
+        raw: rawText
+      })
+    }
+
+    return reply.send(parsed)
+
   } catch (error) {
     request.log.error(error)
+
     return reply.status(500).send({
       error: "Failed to analyze food"
     })
@@ -47,7 +93,7 @@ const start = async () => {
       host: "0.0.0.0"
     })
 
-    console.log("Server started")
+    console.log("Server started on port", process.env.PORT || 3000)
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)
