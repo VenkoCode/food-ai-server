@@ -4,6 +4,7 @@ import { coachRoutes } from "./src/routes/coachRoutes.js"
 
 const fastify = Fastify({
   logger: true
+  bodyLimit: 10 * 1024 * 1024 // 10 MB
 })
 
 fastify.get("/", async () => {
