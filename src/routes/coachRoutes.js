@@ -1,6 +1,7 @@
 import { openai } from "../services/openaiService.js"
 import { buildDayAdvicePrompt } from "../prompts/dayAdvicePrompt.js"
 import { parseJsonSafe } from "../utils/parseJson.js"
+import { detectScenario } from "../utils/scenarioDetector.js"
 
 export async function coachRoutes(fastify) {
   fastify.post("/day-advice", async (request, reply) => {
@@ -26,10 +27,32 @@ export async function coachRoutes(fastify) {
         })
       }
 
+      const remaining_calories = (targets.calories || 0) - (consumed.calories || 0)
+      const remaining_protein = (targets.protein || 0) - (consumed.protein || 0)
+      const remaining_carbs = (targets.carbs || 0) - (consumed.carbs || 0)
+      const remaining_fats = (targets.fats || 0) - (consumed.fats || 0)
+
+      const hour = new Date().getHours()
+
+      const scenario = detectScenario({
+        goal,
+        remaining_calories,
+        remaining_protein,
+        remaining_carbs,
+        remaining_fats,
+        hour
+      })
+
       const prompt = buildDayAdvicePrompt({
         goal,
         targets,
-        consumed
+        consumed,
+        scenario,
+        hour,
+        remaining_calories,
+        remaining_protein,
+        remaining_carbs,
+        remaining_fats
       })
 
       const response = await openai.responses.create({
