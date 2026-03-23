@@ -56,6 +56,7 @@ export async function foodRoutes(fastify) {
     try {
       const body = request.body || {}
       const imageBase64 = body.image_base64
+      const diet = body.diet
 
       if (!imageBase64 || typeof imageBase64 !== "string") {
         return reply.status(400).send({
@@ -63,7 +64,15 @@ export async function foodRoutes(fastify) {
         })
       }
 
-      const prompt = buildAnalyzeImagePrompt()
+      if (diet && typeof diet !== "string") {
+        return reply.status(400).send({
+          error: "Field 'diet' must be a string if provided"
+        })
+      }
+
+      const prompt = buildAnalyzeImagePrompt({
+        diet: diet || "standard"
+      })
 
       const response = await openai.responses.create({
         model: "gpt-4.1-mini",
