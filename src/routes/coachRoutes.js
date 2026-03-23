@@ -7,7 +7,7 @@ export async function coachRoutes(fastify) {
   fastify.post("/day-advice", async (request, reply) => {
     try {
       const body = request.body || {}
-      const { goal, targets, consumed } = body
+      const { goal, targets, consumed, diet } = body
 
       if (!goal || typeof goal !== "string") {
         return reply.status(400).send({
@@ -24,6 +24,12 @@ export async function coachRoutes(fastify) {
       if (!consumed || typeof consumed !== "object") {
         return reply.status(400).send({
           error: "Field 'consumed' is required"
+        })
+      }
+
+      if (diet && typeof diet !== "string") {
+        return reply.status(400).send({
+          error: "Field 'diet' must be a string if provided"
         })
       }
 
@@ -45,6 +51,7 @@ export async function coachRoutes(fastify) {
 
       const prompt = buildDayAdvicePrompt({
         goal,
+        diet: diet || "standard",
         targets,
         consumed,
         scenario,
