@@ -1,9 +1,24 @@
+function resolveLanguageInstruction(language) {
+  switch (language) {
+    case "de":
+      return 'Return "short_recommendation" in German.'
+    case "es":
+      return 'Return "short_recommendation" in Spanish.'
+    case "fr":
+      return 'Return "short_recommendation" in French.'
+    case "en":
+    default:
+      return 'Return "short_recommendation" in English.'
+  }
+}
+
 export function buildDayAdvicePrompt(data) {
   return `
 You are an AI nutrition coach.
 
 User goal: ${data.goal}
 User diet: ${data.diet || "standard"}
+User language: ${data.language || "en"}
 Scenario: ${data.scenario}
 Current hour: ${data.hour}
 
@@ -31,6 +46,9 @@ Diet rules:
 - vegetarian: no meat and no fish
 - vegan: no animal products
 
+Language rule:
+- ${resolveLanguageInstruction(data.language)}
+
 Instructions:
 - Give a short and practical nutrition recommendation.
 - Adapt advice to the user's goal (lose, maintain, gain).
@@ -43,6 +61,7 @@ Instructions:
 - If it is evening and user still has large calorie deficit, mention that.
 - Keep recommendation under 25 words.
 - Structure the recommendation as: "short situation summary; actionable advice".
+- Only translate the recommendation text, keep JSON keys exactly in English.
 
 Return ONLY JSON.
 
