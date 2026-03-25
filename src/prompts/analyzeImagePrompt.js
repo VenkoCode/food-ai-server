@@ -1,8 +1,23 @@
+function resolveLanguageInstruction(language) {
+  switch (language) {
+    case "de":
+      return 'Return "short_advice" in German.'
+    case "es":
+      return 'Return "short_advice" in Spanish.'
+    case "fr":
+      return 'Return "short_advice" in French.'
+    case "en":
+    default:
+      return 'Return "short_advice" in English.'
+  }
+}
+
 export function buildAnalyzeImagePrompt(data = {}) {
   return `
 You are a nutrition assistant.
 
 User diet: ${data.diet || "standard"}
+User language: ${data.language || "en"}
 
 Analyze the food shown in the image and return ONLY valid JSON.
 
@@ -23,6 +38,10 @@ Diet rules:
 - pescatarian: fish and seafood allowed, but no meat
 - vegetarian: no meat and no fish
 - vegan: no animal products
+
+Language rule:
+- ${resolveLanguageInstruction(data.language)}
+- Only translate the advice text, keep JSON keys and ingredient names natural and simple.
 
 Rules:
 - Return a realistic estimate.
