@@ -7,7 +7,7 @@ export async function coachRoutes(fastify) {
   fastify.post("/day-advice", async (request, reply) => {
     try {
       const body = request.body || {}
-      const { goal, targets, consumed, diet } = body
+      const { goal, targets, consumed, diet, language } = body
 
       if (!goal || typeof goal !== "string") {
         return reply.status(400).send({
@@ -33,6 +33,12 @@ export async function coachRoutes(fastify) {
         })
       }
 
+      if (language && typeof language !== "string") {
+        return reply.status(400).send({
+          error: "Field 'language' must be a string if provided"
+        })
+      }
+
       const remaining_calories = (targets.calories || 0) - (consumed.calories || 0)
       const remaining_protein = (targets.protein || 0) - (consumed.protein || 0)
       const remaining_carbs = (targets.carbs || 0) - (consumed.carbs || 0)
@@ -52,6 +58,7 @@ export async function coachRoutes(fastify) {
       const prompt = buildDayAdvicePrompt({
         goal,
         diet: diet || "standard",
+        language: language || "en",
         targets,
         consumed,
         scenario,
