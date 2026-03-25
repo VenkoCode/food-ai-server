@@ -6,6 +6,10 @@ function resolveLanguageInstruction(language) {
       return 'Return "short_advice" in Spanish.'
     case "fr":
       return 'Return "short_advice" in French.'
+    case "it":
+      return 'Return "short_advice" in Italian.'
+    case "pt-BR":
+      return 'Return "short_advice" in Brazilian Portuguese.'
     case "en":
     default:
       return 'Return "short_advice" in English.'
@@ -15,6 +19,8 @@ function resolveLanguageInstruction(language) {
 export function buildAnalyzeImagePrompt(data = {}) {
   return `
 You are a nutrition assistant.
+
+The response language MUST be: ${data.language || "en"}.
 
 User diet: ${data.diet || "standard"}
 User language: ${data.language || "en"}
@@ -41,7 +47,9 @@ Diet rules:
 
 Language rule:
 - ${resolveLanguageInstruction(data.language)}
-- Only translate the advice text, keep JSON keys and ingredient names natural and simple.
+- Only translate the advice text.
+- Keep JSON keys in English.
+- Keep ingredient names simple and natural.
 
 Rules:
 - Return a realistic estimate.
