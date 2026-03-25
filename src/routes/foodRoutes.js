@@ -57,6 +57,7 @@ export async function foodRoutes(fastify) {
       const body = request.body || {}
       const imageBase64 = body.image_base64
       const diet = body.diet
+      const language = body.language
 
       if (!imageBase64 || typeof imageBase64 !== "string") {
         return reply.status(400).send({
@@ -70,8 +71,15 @@ export async function foodRoutes(fastify) {
         })
       }
 
+      if (language && typeof language !== "string") {
+        return reply.status(400).send({
+          error: "Field 'language' must be a string if provided"
+        })
+      }
+
       const prompt = buildAnalyzeImagePrompt({
-        diet: diet || "standard"
+        diet: diet || "standard",
+        language: language || "en"
       })
 
       const response = await openai.responses.create({
