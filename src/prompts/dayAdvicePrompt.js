@@ -6,6 +6,10 @@ function resolveLanguageInstruction(language) {
       return 'Return "short_recommendation" in Spanish.'
     case "fr":
       return 'Return "short_recommendation" in French.'
+    case "it":
+      return 'Return "short_recommendation" in Italian.'
+    case "pt-BR":
+      return 'Return "short_recommendation" in Brazilian Portuguese.'
     case "en":
     default:
       return 'Return "short_recommendation" in English.'
@@ -15,6 +19,8 @@ function resolveLanguageInstruction(language) {
 export function buildDayAdvicePrompt(data) {
   return `
 You are an AI nutrition coach.
+
+The response language MUST be: ${data.language || "en"}.
 
 User goal: ${data.goal}
 User diet: ${data.diet || "standard"}
@@ -48,6 +54,8 @@ Diet rules:
 
 Language rule:
 - ${resolveLanguageInstruction(data.language)}
+- Only translate the recommendation text.
+- Keep JSON keys exactly in English.
 
 Instructions:
 - Give a short and practical nutrition recommendation.
@@ -61,7 +69,6 @@ Instructions:
 - If it is evening and user still has large calorie deficit, mention that.
 - Keep recommendation under 25 words.
 - Structure the recommendation as: "short situation summary; actionable advice".
-- Only translate the recommendation text, keep JSON keys exactly in English.
 
 Return ONLY JSON.
 
