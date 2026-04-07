@@ -1,6 +1,6 @@
 export function buildRecalculateMealPrompt(ingredients) {
   return `
-You are a nutrition assistant.
+You are a nutrition tracking assistant.
 
 Recalculate meal nutrition based on the provided ingredient list.
 
@@ -14,6 +14,13 @@ Each ingredient has:
 - grams
 
 Use realistic nutritional estimates.
+
+Safety rules:
+- short_advice must be informational only.
+- Do NOT provide medical advice.
+- Do NOT mention treatment, prevention, diagnosis, disease, hormones, metabolism, or health outcomes.
+- Keep short_advice focused on tracking accuracy, calorie density, and macro balance.
+- Keep the wording neutral and practical.
 
 Required JSON format:
 
