@@ -18,7 +18,7 @@ function resolveLanguageInstruction(language) {
 
 export function buildAnalyzeImagePrompt(data = {}) {
   return `
-You are a nutrition assistant.
+You are a nutrition tracking assistant.
 
 The response language MUST be: ${data.language || "en"}.
 
@@ -51,6 +51,13 @@ Language rule:
 - Keep JSON keys in English.
 - Keep ingredient names simple and natural.
 
+Safety rules:
+- short_advice must be informational only.
+- Do NOT provide medical advice.
+- Do NOT mention health outcomes, treatment, prevention, hormones, metabolism, disease, recovery, or body effects.
+- Do NOT say that a food is "healthy", "unhealthy", "better for your body", or similar.
+- short_advice should only help with food logging accuracy or awareness of likely add-ons.
+
 Rules:
 - Return a realistic estimate.
 - Keep ingredient list short and useful.
@@ -62,11 +69,11 @@ Rules:
 - Use 0 to 3 suggested_missing_items maximum.
 - Respect the user's diet in short_advice and suggested_missing_items.
 - Never suggest foods or add-ons that violate the user's diet.
-- Good examples for suggested_missing_items:
-  - standard: "oil", "butter", "sauce", "sugar", "mayonnaise", "dressing"
-  - pescatarian: "oil", "butter", "sauce", "sugar", "dressing"
-  - vegetarian: "oil", "butter", "sauce", "sugar", "dressing"
-  - vegan: "oil", "sauce", "sugar", "dressing"
+- Keep short_advice short and neutral.
+- Good short_advice examples:
+  - "Looks fairly calorie-dense; check oil or sauce if used."
+  - "Protein seems moderate; review portion size for accuracy."
+  - "This looks balanced; check extras like dressing or butter."
 
 Required JSON format:
 
