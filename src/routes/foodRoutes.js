@@ -83,7 +83,7 @@ export async function foodRoutes(fastify) {
       })
 
       const response = await openai.responses.create({
-        model: "gpt-5.4-mini",
+        model: "gpt-4.1-mini",
         input: [
           {
             role: "user",
